@@ -4,8 +4,16 @@ import com.syed.loanapplication.dto.LoanApplicationDTO;
 import com.syed.loanapplication.entity.LoanApplication;
 import com.syed.loanapplication.entity.CorporateClient;
 import com.syed.loanapplication.enums.ApplicationStatus;
+import com.syed.loanapplication.repository.CorporateClientRepository;
+import com.syed.loanapplication.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoanApplicationMapper {
+
+    @Autowired
+    private CorporateClientRepository corporateClientRepository;
 
     // Convert Entity to DTO
     public LoanApplicationDTO toDTO(LoanApplication loanApplication) {
@@ -13,7 +21,7 @@ public class LoanApplicationMapper {
             return null;
         }
 
-        LoanApplicationDTO dto = new LoanApplicationDTO(
+        return new LoanApplicationDTO(
                 loanApplication.getApplicationId(),
                 loanApplication.getCorporateClient() != null ? loanApplication.getCorporateClient().getClientId() : null,
                 loanApplication.getLoanType(),
@@ -24,8 +32,6 @@ public class LoanApplicationMapper {
                 loanApplication.getCreatedAt(),
                 loanApplication.getUpdatedAt()
         );
-
-        return dto;
     }
 
     // Convert DTO to Entity
@@ -36,8 +42,9 @@ public class LoanApplicationMapper {
 
         LoanApplication loanApplication = new LoanApplication();
         loanApplication.setApplicationId(loanApplicationDTO.getApplicationId());
-        // Assume a method to fetch CorporateClient by ID
-        CorporateClient client = findCorporateClientById(loanApplicationDTO.getClientId());
+        // Fetch CorporateClient by ID
+        CorporateClient client = corporateClientRepository.findById(loanApplicationDTO.getClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("CorporateClient", "clientId", loanApplicationDTO.getClientId()));
         loanApplication.setCorporateClient(client);
         loanApplication.setLoanType(loanApplicationDTO.getLoanType());
         loanApplication.setLoanAmount(loanApplicationDTO.getLoanAmount());
@@ -48,11 +55,5 @@ public class LoanApplicationMapper {
         loanApplication.setUpdatedAt(loanApplicationDTO.getUpdatedAt());
 
         return loanApplication;
-    }
-
-    // Mock method to simulate fetching CorporateClient
-    private CorporateClient findCorporateClientById(Long clientId) {
-        // Implementation to fetch CorporateClient by ID from the database or other source
-        return new CorporateClient(); // Example placeholder
     }
 }

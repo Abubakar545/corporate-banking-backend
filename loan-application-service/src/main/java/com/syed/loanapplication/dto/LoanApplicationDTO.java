@@ -6,7 +6,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Data @AllArgsConstructor
+@Data
+@AllArgsConstructor
 public class LoanApplicationDTO {
 
     private Long applicationId;
@@ -18,5 +19,4 @@ public class LoanApplicationDTO {
     private Date reviewDate;
     private Date createdAt;
     private Date updatedAt;
-
 }

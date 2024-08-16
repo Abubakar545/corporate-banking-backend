@@ -3,11 +3,9 @@ package com.syed.loanapplication.entity;
 import com.syed.loanapplication.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
-
 
 @Entity
 @Getter
@@ -34,7 +32,7 @@ public class LoanApplication {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "application_status", nullable = false)
-    private ApplicationStatus applicationStatus; // Pending, Approved, Rejected
+    private ApplicationStatus applicationStatus;
 
     @Column(name = "submission_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,7 +50,17 @@ public class LoanApplication {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
     @OneToMany(mappedBy = "loanApplication")
     private Set<LoanReview> loanReviews;
+
 
 }

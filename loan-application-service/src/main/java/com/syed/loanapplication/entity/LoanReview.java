@@ -1,11 +1,9 @@
 package com.syed.loanapplication.entity;
 
-import com.syed.loanapplication.enums.ApprovalStatus;
+import com.syed.loanapplication.enums.ApplicationStatus; // Update to use ApplicationStatus
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
-
 
 @Entity
 @Getter
@@ -33,7 +31,7 @@ public class LoanReview {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_status", nullable = false)
-    private ApprovalStatus approvalStatus; // Approved, Rejected
+    private ApplicationStatus approvalStatus; // Update to use ApplicationStatus
 
     @Column(name = "review_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,4 +44,14 @@ public class LoanReview {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 }

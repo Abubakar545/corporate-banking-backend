@@ -4,8 +4,9 @@ import com.syed.loanapplication.dto.LoanReviewDTO;
 import com.syed.loanapplication.entity.LoanReview;
 import com.syed.loanapplication.entity.LoanApplication;
 import com.syed.loanapplication.entity.LoanOfficer;
-import com.syed.loanapplication.enums.ApprovalStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoanReviewMapper {
 
     // Convert Entity to DTO

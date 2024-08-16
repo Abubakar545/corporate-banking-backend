@@ -1,12 +1,10 @@
 package com.syed.loanapplication.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
-
 
 @Entity
 @Getter
@@ -25,7 +23,10 @@ public class LoanOfficer {
     private String officerName;
 
     @Column(name = "email", nullable = false)
-    private String email;
+    private String officerEmail;
+
+    @Column(name = "phone", nullable = false)
+    private String officerPhone;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,7 +36,17 @@ public class LoanOfficer {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "loanOfficer")
+    @OneToMany(mappedBy = "loanOfficer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanReview> loanReviews;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 
 }

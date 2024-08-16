@@ -1,13 +1,10 @@
 package com.syed.loanapplication.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
-
-
 
 @Entity
 @Getter @Setter @ToString @AllArgsConstructor @NoArgsConstructor
@@ -41,8 +38,16 @@ public class CorporateClient {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "corporateClient")
+    @OneToMany(mappedBy = "corporateClient", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LoanApplication> loanApplications;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 }
