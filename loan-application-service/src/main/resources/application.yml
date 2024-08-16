@@ -1,0 +1,27 @@
+server:
+    port: 8071                                        # Application running on port 8071
+
+spring:
+    application:
+        name: loan-application-service
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/loan_application_db  # MySQL database URL (update with your DB name)
+        username: root                                        # Replace with your MySQL username
+        password: root                                        # Replace with your MySQL password
+        driver-class-name: com.mysql.cj.jdbc.Driver           # MySQL JDBC Driver
+
+        hikari:
+            maximum-pool-size: 10                               # Maximum connections in the pool
+            minimum-idle: 5                                     # Minimum number of idle connections in the pool
+            idle-timeout: 30000                                 # Time (in ms) a connection can be idle before being closed
+            max-lifetime: 1800000                               # Maximum lifetime (in ms) of a connection in the pool
+            connection-timeout: 20000                           # Maximum time (in ms) to wait for a connection from the pool
+
+    jpa:
+        hibernate:
+            ddl-auto: update                                   # Automatically update the database schema
+        show-sql: true                                         # Show SQL queries in the console
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect   # Hibernate dialect for MySQL 8.x
