@@ -20,3 +20,4 @@ public class LoanApplicationDTO {
     private Date createdAt;
     private Date updatedAt;
 }
+

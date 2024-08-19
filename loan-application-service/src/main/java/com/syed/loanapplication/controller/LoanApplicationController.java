@@ -17,6 +17,7 @@ public class LoanApplicationController {
     @Autowired
     private ILoanApplicationService loanApplicationService;
 
+
     @PostMapping
     public ResponseEntity<LoanApplicationDTO> createLoanApplication(@RequestBody LoanApplicationDTO loanApplicationDTO) {
         try {
