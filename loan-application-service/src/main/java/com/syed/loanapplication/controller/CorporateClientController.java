@@ -3,7 +3,9 @@ package com.syed.loanapplication.controller;
 import com.syed.loanapplication.dto.CorporateClientDTO;
 import com.syed.loanapplication.service.ICorporateClientService;
 import com.syed.loanapplication.constants.ResponseConstants;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/corporate-clients")
+@Validated
 public class CorporateClientController {
 
     private final ICorporateClientService corporateClientService;
@@ -40,7 +43,7 @@ public class CorporateClientController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCorporateClient(@RequestBody CorporateClientDTO corporateClientDTO) {
+    public ResponseEntity<?> createCorporateClient(@RequestBody @Valid CorporateClientDTO corporateClientDTO) {
         CorporateClientDTO createdClient = corporateClientService.createCorporateClient(corporateClientDTO);
         return ResponseEntity
                 .status(ResponseConstants.STATUS_CREATED)
@@ -48,7 +51,7 @@ public class CorporateClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCorporateClient(@PathVariable Long id, @RequestBody CorporateClientDTO corporateClientDTO) {
+    public ResponseEntity<?> updateCorporateClient(@PathVariable Long id,@Valid @RequestBody CorporateClientDTO corporateClientDTO) {
         CorporateClientDTO updatedClient = corporateClientService.updateCorporateClient(id, corporateClientDTO);
         if (updatedClient != null) {
             return ResponseEntity.ok(updatedClient);

@@ -50,19 +50,6 @@ public class LoanDisbursementServiceImpl implements LoanDisbursementService {
         return loanDisbursementDTO;
     }
 
-    @Override
-    public LoanApplicationDTO getLoanApplicationById(Long id) throws ResourceNotFoundException {
-        try {
-            LoanApplicationDTO loanApplicationDTO = loanApplicationClient.getApplicationById(id);
-            if (loanApplicationDTO == null) {
-                throw new ResourceNotFoundException("Loan Application not found for this id :: " + id);
-            }
-            return loanApplicationDTO;
-        } catch (Exception e) {
-            // Log the exception (optional)
-            throw new ResourceNotFoundException("Error fetching Loan Application with id :: " + id);
-        }
-    }
 
     @Override
     public List<LoanDisbursementDTO> getAllDisbursements() {
@@ -87,9 +74,8 @@ public class LoanDisbursementServiceImpl implements LoanDisbursementService {
         LoanApplicationDTO loanApplicationDTO = loanApplicationClient.getApplicationById(disbursement.getLoanApplicationId());
 
         // Check if Loan Application is Approved
-        if (loanApplicationDTO == null) {
+        if (loanApplicationDTO == null)
             throw new ResourceNotFoundException("Loan application with ID " + disbursement.getLoanApplicationId() + " not found.");
-        }
 
         if (!"APPROVED".equals(loanApplicationDTO.getApplicationStatus())) {
             throw new LoanApplicationNotApprovedException("Loan application with ID " + disbursement.getLoanApplicationId() + " is not approved.");

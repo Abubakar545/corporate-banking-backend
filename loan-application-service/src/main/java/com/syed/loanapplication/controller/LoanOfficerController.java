@@ -7,6 +7,7 @@ import com.syed.loanapplication.service.ILoanOfficerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class LoanOfficerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLoanOfficer(@RequestBody LoanOfficerDTO loanOfficerDTO) {
+    public ResponseEntity<?> createLoanOfficer(@Valid @RequestBody LoanOfficerDTO loanOfficerDTO) {
         try {
             LoanOfficerDTO createdLoanOfficer = loanOfficerService.createLoanOfficer(loanOfficerDTO);
             return ResponseEntity
@@ -58,7 +59,7 @@ public class LoanOfficerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateLoanOfficer(@PathVariable Long id, @RequestBody LoanOfficerDTO loanOfficerDTO) {
+    public ResponseEntity<?> updateLoanOfficer(@PathVariable Long id, @Valid @RequestBody LoanOfficerDTO loanOfficerDTO) {
         try {
             LoanOfficerDTO updatedLoanOfficer = loanOfficerService.updateLoanOfficer(id, loanOfficerDTO);
             return ResponseEntity

@@ -1,14 +1,19 @@
 package com.syed.loanapplication.controller;
 
 import com.syed.loanapplication.dto.LoanApplicationDTO;
-import com.syed.loanapplication.service.ILoanApplicationService;
 import com.syed.loanapplication.exception.ResourceNotFoundException;
+import com.syed.loanapplication.service.ILoanApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/loan-applications")
@@ -17,9 +22,8 @@ public class LoanApplicationController {
     @Autowired
     private ILoanApplicationService loanApplicationService;
 
-
     @PostMapping
-    public ResponseEntity<LoanApplicationDTO> createLoanApplication(@RequestBody LoanApplicationDTO loanApplicationDTO) {
+    public ResponseEntity<LoanApplicationDTO> createLoanApplication(@Valid @RequestBody LoanApplicationDTO loanApplicationDTO) {
         try {
             LoanApplicationDTO createdLoanApplication = loanApplicationService.createLoanApplication(loanApplicationDTO);
             return new ResponseEntity<>(createdLoanApplication, HttpStatus.CREATED);
@@ -31,7 +35,7 @@ public class LoanApplicationController {
     @PutMapping("/{id}")
     public ResponseEntity<LoanApplicationDTO> updateLoanApplication(
             @PathVariable("id") Long id,
-            @RequestBody LoanApplicationDTO loanApplicationDTO) {
+            @Valid @RequestBody LoanApplicationDTO loanApplicationDTO) {
         try {
             LoanApplicationDTO updatedLoanApplication = loanApplicationService.updateLoanApplication(id, loanApplicationDTO);
             return new ResponseEntity<>(updatedLoanApplication, HttpStatus.OK);
@@ -64,5 +68,16 @@ public class LoanApplicationController {
     public ResponseEntity<List<LoanApplicationDTO>> getAllLoanApplications() {
         List<LoanApplicationDTO> loanApplications = loanApplicationService.getAllLoanApplications();
         return new ResponseEntity<>(loanApplications, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }
