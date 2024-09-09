@@ -1,0 +1,27 @@
+server:
+  port: 8077
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+    registerWithEureka: true
+    fetchRegistry: true
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/your-repo/config-repo
+          # For private repositories, you can add the following lines:
+          # username: your-username
+          # password: your-password
+          # search-paths: '{application}/{profile}' # Optional, for specifying search paths
+
+# Security (Optional, for securing the Config Server)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
