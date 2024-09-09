@@ -4,15 +4,22 @@ import com.syed.loanapplication.constants.ResponseConstants;
 import com.syed.loanapplication.dto.LoanOfficerDTO;
 import com.syed.loanapplication.exception.ResourceNotFoundException;
 import com.syed.loanapplication.service.ILoanOfficerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/loan-officers")
+@Tag(name = "Loan Officers", description = "Operations related to loan officers.")
 public class LoanOfficerController {
 
     private final ILoanOfficerService loanOfficerService;
@@ -22,7 +29,30 @@ public class LoanOfficerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getLoanOfficer(@PathVariable Long id) {
+    @Operation(
+            summary = "Get Loan Officer by ID",
+            description = "Retrieve a loan officer by their ID.",
+            tags = {"Loan Officers"},
+            responses = {
+                    @ApiResponse(description = "Loan officer found", responseCode = "200",
+                            content = @Content(
+                                    schema = @Schema(implementation = LoanOfficerDTO.class),
+                                    examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            name = "Loan Officer Example",
+                                            summary = "Example of a loan officer retrieval response",
+                                            value = "{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }"
+                                    )
+                            )
+                    ),
+                    @ApiResponse(description = "Loan officer not found", responseCode = "404",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Resource not found")
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> getLoanOfficer(
+            @Parameter(description = "ID of the loan officer to be retrieved", example = "1") @PathVariable Long id) {
         Optional<LoanOfficerDTO> loanOfficerDTO = loanOfficerService.getLoanOfficer(id);
         if (loanOfficerDTO.isPresent()) {
             return ResponseEntity
@@ -36,6 +66,23 @@ public class LoanOfficerController {
     }
 
     @GetMapping
+    @Operation(
+            summary = "Get All Loan Officers",
+            description = "Retrieve a list of all loan officers.",
+            tags = {"Loan Officers"},
+            responses = {
+                    @ApiResponse(description = "List of loan officers", responseCode = "200",
+                            content = @Content(
+                                    schema = @Schema(implementation = LoanOfficerDTO.class, type = "array"),
+                                    examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            name = "Loan Officers List Example",
+                                            summary = "Example of a list of loan officers",
+                                            value = "[{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }, { \"id\": 2, \"name\": \"Jane Smith\", \"email\": \"jane.smith@example.com\", \"phone\": \"0987654321\" }]"
+                                    )
+                            )
+                    )
+            }
+    )
     public ResponseEntity<List<LoanOfficerDTO>> getAllLoanOfficers() {
         List<LoanOfficerDTO> loanOfficers = loanOfficerService.getAllLoanOfficers();
         return ResponseEntity
@@ -44,6 +91,39 @@ public class LoanOfficerController {
     }
 
     @PostMapping
+    @Operation(
+            summary = "Create a Loan Officer",
+            description = "Create a new loan officer.",
+            tags = {"Loan Officers"},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Details of the loan officer to create",
+                    content = @Content(
+                            schema = @Schema(implementation = LoanOfficerDTO.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Loan Officer Creation Example",
+                                    summary = "Example of a loan officer creation request",
+                                    value = "{ \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }"
+                            )
+                    )
+            ),
+            responses = {
+                    @ApiResponse(description = "Loan officer created successfully", responseCode = "201",
+                            content = @Content(
+                                    schema = @Schema(implementation = LoanOfficerDTO.class),
+                                    examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            name = "Loan Officer Created Example",
+                                            summary = "Example of a successful loan officer creation response",
+                                            value = "{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }"
+                                    )
+                            )
+                    ),
+                    @ApiResponse(description = "Internal server error", responseCode = "500",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Internal server error")
+                            )
+                    )
+            }
+    )
     public ResponseEntity<?> createLoanOfficer(@Valid @RequestBody LoanOfficerDTO loanOfficerDTO) {
         try {
             LoanOfficerDTO createdLoanOfficer = loanOfficerService.createLoanOfficer(loanOfficerDTO);
@@ -59,7 +139,47 @@ public class LoanOfficerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateLoanOfficer(@PathVariable Long id, @Valid @RequestBody LoanOfficerDTO loanOfficerDTO) {
+    @Operation(
+            summary = "Update a Loan Officer",
+            description = "Update an existing loan officer by ID.",
+            tags = {"Loan Officers"},
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Updated details of the loan officer",
+                    content = @Content(
+                            schema = @Schema(implementation = LoanOfficerDTO.class),
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = "Loan Officer Update Example",
+                                    summary = "Example of a loan officer update request",
+                                    value = "{ \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }"
+                            )
+                    )
+            ),
+            responses = {
+                    @ApiResponse(description = "Loan officer updated successfully", responseCode = "200",
+                            content = @Content(
+                                    schema = @Schema(implementation = LoanOfficerDTO.class),
+                                    examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            name = "Loan Officer Updated Example",
+                                            summary = "Example of a successful loan officer update response",
+                                            value = "{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john.doe@example.com\", \"phone\": \"1234567890\" }"
+                                    )
+                            )
+                    ),
+                    @ApiResponse(description = "Loan officer not found", responseCode = "404",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Resource not found")
+                            )
+                    ),
+                    @ApiResponse(description = "Internal server error", responseCode = "500",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Internal server error")
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> updateLoanOfficer(
+            @Parameter(description = "ID of the loan officer to be updated", example = "1") @PathVariable Long id,
+            @Valid @RequestBody LoanOfficerDTO loanOfficerDTO) {
         try {
             LoanOfficerDTO updatedLoanOfficer = loanOfficerService.updateLoanOfficer(id, loanOfficerDTO);
             return ResponseEntity
@@ -78,12 +198,31 @@ public class LoanOfficerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLoanOfficer(@PathVariable Long id) {
+    @Operation(
+            summary = "Delete a Loan Officer",
+            description = "Delete a loan officer by ID.",
+            tags = {"Loan Officers"},
+            responses = {
+                    @ApiResponse(description = "Loan officer deleted successfully", responseCode = "204"),
+                    @ApiResponse(description = "Loan officer not found", responseCode = "404",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Resource not found")
+                            )
+                    ),
+                    @ApiResponse(description = "Internal server error", responseCode = "500",
+                            content = @Content(
+                                    schema = @Schema(type = "string", example = "Internal server error")
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> deleteLoanOfficer(
+            @Parameter(description = "ID of the loan officer to be deleted", example = "1") @PathVariable Long id) {
         try {
             loanOfficerService.deleteLoanOfficer(id);
             return ResponseEntity
                     .status(ResponseConstants.STATUS_NO_CONTENT)
-                    .body(ResponseConstants.MESSAGE_OK); // Changed to MESSAGE_OK if there's no specific message
+                    .build();
         } catch (ResourceNotFoundException e) {
             return ResponseEntity
                     .status(ResponseConstants.STATUS_NOT_FOUND)

@@ -8,12 +8,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="loan-application-service" />
+        <module name="api-gateway" />
+        <module name="config-server" />
         <module name="loan-disbursement-service" />
+        <module name="eureka-server" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
+      <module name="config-server" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="loan-application-service" options="-parameters" />
       <module name="loan-disbursement-service" options="-parameters" />
     </option>
